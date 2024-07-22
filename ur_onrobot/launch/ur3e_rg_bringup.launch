@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="robot_ip" default="150.22.0.250" />
+    <arg name="kinematics_config" default="$(find ur_description)/config/ur3e/default_kinematics.yaml" />
+    <arg name="robot_description_file" default="$(find ur_description)/launch/load_ur3e.launch" />
+    <arg name="gripper" default="rg2" />
+    <arg name="tool_device_name" default="/tmp/ttyUR" />
+    <arg name="tool_tcp_port" default="54321" />
+
+
+    <include file="$(find ur_robot_driver)/launch/ur3e_bringup.launch">
+        <arg name="robot_ip" value="$(arg robot_ip)" />
+        <arg name="kinematics_config" value="$(arg kinematics_config)" />
+        <arg name="robot_description_file" value="$(arg robot_description_file)" />
+        <arg name="use_tool_communication" value="true" />
+        <arg name="tool_voltage" value="24" />
+        <arg name="tool_parity" value="2" />
+        <arg name="tool_baud_rate" value="1000000" />
+        <arg name="tool_stop_bits" value="1" />
+        <arg name="tool_rx_idle_chars" value="1.5" />
+        <arg name="tool_tx_idle_chars" value="3.5" />
+        <arg name="tool_device_name" value="$(arg tool_device_name)" />
+        <arg name="tool_tcp_port" value="$(arg tool_tcp_port)" />
+    </include>
+
+    <include file="$(find ur_onrobot_rg_control)/launch/bringup_serial_server.launch">
+        <arg name="device" value="$(arg tool_device_name)" />
+        <arg name="gripper" value="$(arg gripper)" />
+    </include>
+</launch>

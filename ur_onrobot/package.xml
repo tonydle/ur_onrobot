@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>ur_onrobot</name>
+  <version>1.0.0</version>
+  <description>ROS drivers for Universal Robot e-Series installed with OnRobot Grippers.</description>
+  <maintainer email="tonyle98@outlook.com">Tony Le</maintainer>
+  <author email="tonyle98@outlook.com">Tony Le</author>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>onrobot</exec_depend>
+  <exec_depend>ur_description</exec_depend>
+  <exec_depend>ur_robot_driver</exec_depend>
+</package>

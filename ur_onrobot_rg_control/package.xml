@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>ur_onrobot_rg_control</name>
+  <version>1.0.0</version>
+  <description>Package to control an OnRobot RG gripper connected to a Universal Robot e-Series via Tool I/O with RS-485</description>
+  <maintainer email="tonyle98@outlook.com">Tony Le</maintainer>
+  <author email="tonyle98@outlook.com">Tony Le</author>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rospy</depend>
+  <depend>std_srvs</depend>
+  <depend>onrobot_rg_control</depend>
+  <depend>ur_onrobot_rg_modbus_serial</depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+</package>
