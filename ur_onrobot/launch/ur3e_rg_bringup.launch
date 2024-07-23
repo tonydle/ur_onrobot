@@ -23,7 +23,7 @@
         <arg name="tool_tcp_port" value="$(arg tool_tcp_port)" />
     </include>
 
-    <include file="$(find ur_onrobot_rg_control)/launch/bringup_serial_server.launch">
+    <include file="$(find ur_onrobot_rg_control)/launch/bringup_rg.launch">
         <arg name="device" value="$(arg tool_device_name)" />
         <arg name="gripper" value="$(arg gripper)" />
     </include>

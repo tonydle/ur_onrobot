@@ -10,7 +10,15 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
   <depend>std_srvs</depend>
-  <depend>onrobot_rg_control</depend>
+  <depend>std_msgs</depend>
+  <depend>hardware_interface</depend>
+  <depend>controller_interface</depend>
+  <depend>controller_manager</depend>
+  <depend>joint_limits_interface</depend>
+  <depend>roscpp</depend>
+  <build_depend>onrobot_rg_control</build_depend>
+  <build_export_depend>onrobot_rg_control</build_export_depend>
+  <exec_depend>onrobot_rg_control</exec_depend>
   <depend>ur_onrobot_rg_modbus_serial</depend>
   <build_depend>message_generation</build_depend>
   <exec_depend>message_runtime</exec_depend>
