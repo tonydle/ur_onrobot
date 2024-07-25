@@ -42,7 +42,7 @@ class OnRobotRGSerial:
 
         # The restarting service
         rospy.Service(
-            "/onrobot_rg/restart_power",
+            'restart_power',
             Trigger,
             self.restartPowerCycle)
 

@@ -14,6 +14,8 @@
   <depend>hardware_interface</depend>
   <depend>controller_interface</depend>
   <depend>controller_manager</depend>
+  <depend>ros_controllers</depend>
+  <depend>gripper_action_controller</depend>
   <depend>joint_limits_interface</depend>
   <depend>roscpp</depend>
   <build_depend>onrobot_rg_control</build_depend>

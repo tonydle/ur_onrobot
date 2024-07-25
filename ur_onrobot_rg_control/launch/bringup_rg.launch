@@ -21,12 +21,6 @@
             type="OnRobotRGSerialNode.py"
             respawn="True"
             output="log"/>
-
-  <!-- <node name="OnRobotRGJointPositionControllerServer"
-      ns="/onrobot_rg"
-      pkg="ur_onrobot_rg_control"
-      type="OnRobotRGJointPositionControllerServer.py"
-      output="screen"/> -->
   
     <node   name="ur_onrobot_rg_control"
             ns="/onrobot_rg"
@@ -45,10 +39,10 @@
     <!-- Load joint controller configurations from YAML file to parameter server -->
     <rosparam file="$(find ur_onrobot_rg_control)/config/rg_controllers.yaml" command="load"/>
 
-    <!-- Start the joint_state_controller (publishes /joint_states) -->
+    <!-- Start ROS controllers -->
     <node name="rg_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
         ns="/onrobot_rg"
-        output="screen" args="joint_state_controller joint_position_controller"/>
+        output="screen" args="joint_state_controller gripper_controller"/>
 
     <node name="rg_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
         ns="/onrobot_rg"
