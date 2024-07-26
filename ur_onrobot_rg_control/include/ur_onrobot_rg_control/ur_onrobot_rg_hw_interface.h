@@ -36,6 +36,7 @@ private:
     double joint_velocity_;
     double joint_effort_;
     double joint_command_;
+    bool position_received_;
 };
 
 #endif // ONROBOT_HW_INTERFACE_H

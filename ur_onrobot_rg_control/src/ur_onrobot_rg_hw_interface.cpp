@@ -1,12 +1,12 @@
 #include "ur_onrobot_rg_control/ur_onrobot_rg_hw_interface.h"
 #include <cmath>
 
-OnRobotRGHWInterface::OnRobotRGHWInterface(ros::NodeHandle& nh) : nh_(nh)
+OnRobotRGHWInterface::OnRobotRGHWInterface(ros::NodeHandle& nh) : nh_(nh), position_received_(false)
 {
-    joint_position_ = 0.0;
+    joint_position_ = std::numeric_limits<double>::quiet_NaN(); // NaN means no position received yet
     joint_velocity_ = 0.0;
     joint_effort_ = 0.0;
-    joint_command_ = 0.0;
+    joint_command_ = std::numeric_limits<double>::quiet_NaN(); // NaN means no command received yet
 
     output_pub_ = nh_.advertise<ur_onrobot_rg_control::OnRobotRGOutputCopy>("OnRobotRGOutputCopy", 10);
     input_sub_ = nh_.subscribe("OnRobotRGInputCopy", 10, &OnRobotRGHWInterface::inputCB, this);
@@ -24,10 +24,13 @@ OnRobotRGHWInterface::OnRobotRGHWInterface(ros::NodeHandle& nh) : nh_(nh)
 void OnRobotRGHWInterface::inputCB(const ur_onrobot_rg_control::OnRobotRGInputCopy::ConstPtr& msg)
 {
     input_data_ = *msg;
+    position_received_ = true;
 }
 
 void OnRobotRGHWInterface::read()
 {
+    if (!position_received_) return; // Do nothing if no position received yet
+    
     double finger_D = (input_data_.gWDF / 10.0) / 1000.0;
     try
     {
@@ -41,6 +44,8 @@ void OnRobotRGHWInterface::read()
 
 void OnRobotRGHWInterface::write()
 {
+    if (std::isnan(joint_command_)) return; // Do nothing if no command received yet
+
     double finger_theta = joint_command_;
     if (finger_theta > 0.785398)
         finger_theta = 0.785398;

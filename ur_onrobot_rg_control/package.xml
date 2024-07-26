@@ -18,6 +18,7 @@
   <depend>gripper_action_controller</depend>
   <depend>joint_limits_interface</depend>
   <depend>roscpp</depend>
+  <depend>ur_robot_driver</depend>
   <build_depend>onrobot_rg_control</build_depend>
   <build_export_depend>onrobot_rg_control</build_export_depend>
   <exec_depend>onrobot_rg_control</exec_depend>

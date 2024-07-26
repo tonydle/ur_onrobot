@@ -1,85 +1,29 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://ros.org/wiki/xacro" name="ur_onrobot_robot">
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="$(arg robot_model)_onrobot_$(arg onrobot_model)">
 
-  <!-- import main macro -->
-  <xacro:include filename="$(find ur_description)/urdf/inc/ur_macro.xacro"/>
+  <!-- import macro -->
+  <xacro:include filename="$(find ur_onrobot_description)/urdf/ur_onrobot_macro.xacro"/>
 
-  <!-- configuration -->
-  <xacro:arg name="robot_model" default="ur3e"/>
-  <xacro:arg name="onrobot_model" default="rg2"/>
-  <xacro:arg name="cable_connector" default="true"/>
-  <xacro:property name="robot_model" value="$(arg robot_model)"/>
-  <xacro:property name="onrobot_model" value="$(arg onrobot_model)"/>
-  <xacro:property name="cable_connector" value="$(arg cable_connector)"/>
-
-  <!-- parameters -->
-  <xacro:arg name="joint_limit_params" default="$(find ur_description)/config/${robot_model}/joint_limits.yaml"/>
-  <xacro:arg name="kinematics_params" default="$(find ur_description)/config/${robot_model}/default_kinematics.yaml"/>
-  <xacro:arg name="physical_params" default="$(find ur_description)/config/${robot_model}/physical_parameters.yaml"/>
-  <xacro:arg name="visual_params" default="$(find ur_description)/config/${robot_model}/visual_parameters.yaml"/>
+  <xacro:arg name="joint_limit_params" default="$(find ur_description)/config/$(arg robot_model)/joint_limits.yaml"/>
+  <xacro:arg name="kinematics_params" default="$(find ur_description)/config/$(arg robot_model)/default_kinematics.yaml"/>
+  <xacro:arg name="physical_params" default="$(find ur_description)/config/$(arg robot_model)/physical_parameters.yaml"/>
+  <xacro:arg name="visual_params" default="$(find ur_description)/config/$(arg robot_model)/visual_parameters.yaml"/>
   <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
   <xacro:arg name="safety_limits" default="false"/>
   <xacro:arg name="safety_pos_margin" default="0.15"/>
   <xacro:arg name="safety_k_position" default="20"/>
 
-  <!-- UR -->
-  <xacro:ur_robot
-    prefix=""
-    joint_limits_parameters_file="$(arg joint_limit_params)"
-    kinematics_parameters_file="$(arg kinematics_params)"
-    physical_parameters_file="$(arg physical_params)"
-    visual_parameters_file="$(arg visual_params)"
+  <xacro:ur_onrobot_robot
+    robot_model="$(arg robot_model)"
+    onrobot_model="$(arg onrobot_model)"
+    cable_connector="$(arg cable_connector)"
+    joint_limit_params="$(arg joint_limit_params)"
+    kinematics_params="$(arg kinematics_params)"
+    physical_params="$(arg physical_params)"
+    visual_params="$(arg visual_params)"
     transmission_hw_interface="$(arg transmission_hw_interface)"
     safety_limits="$(arg safety_limits)"
     safety_pos_margin="$(arg safety_pos_margin)"
     safety_k_position="$(arg safety_k_position)"/>
-
-  <!-- OnRobot -->
-  <xacro:if value="${onrobot_model == 'rg2'}">
-    <xacro:include filename="$(find ur_onrobot_description)/urdf/standalone_onrobot_rg2_model_macro.xacro"/>
-    <xacro:onrobot_rg2 prefix=""/>
-  </xacro:if>
-  <xacro:if value="${onrobot_model == 'rg6'}">
-    <xacro:include filename="$(find ur_onrobot_description)/urdf/standalone_onrobot_rg6_model_macro.xacro"/>
-    <xacro:onrobot_rg6 prefix=""/>
-  </xacro:if>
-
-  <!-- Attach OnRobot Gripper to the UR robot's tool0 link -->
-  <joint name="${robot_model}_onrobot_${onrobot_model}_joint" type="fixed">
-    <parent link="tool0"/>
-    <child link="onrobot_${onrobot_model}_base_link"/>
-    <origin xyz="0. 0. 0." rpy="0. 0. ${-pi/2}"/>
-  </joint>
-
-  <!-- Include cable connector collision links -->
-  <xacro:if value="${cable_connector}">
-    <link name="cable_connector_0">
-      <collision>
-        <geometry>
-          <sphere radius="0.02"/>
-        </geometry>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-      </collision>
-    </link>
-    <joint name="cable_connector_0_joint" type="fixed">
-      <parent link="onrobot_${onrobot_model}_base_link"/>
-      <child link="cable_connector_0"/>
-      <origin xyz="0 -0.035 0.01" rpy="0 0 0"/>
-    </joint>
-
-    <link name="cable_connector_1">
-      <collision>
-        <geometry>
-          <sphere radius="0.02"/>
-        </geometry>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-      </collision>
-    </link>
-    <joint name="cable_connector_1_joint" type="fixed">
-      <parent link="onrobot_${onrobot_model}_base_link"/>
-      <child link="cable_connector_1"/>
-      <origin xyz="0.03 0.0 -0.03" rpy="0 0 0"/>
-    </joint>
-  </xacro:if>
 
 </robot>
