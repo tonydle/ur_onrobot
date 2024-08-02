@@ -1,10 +1,10 @@
-onrobot_rg:
+onrobot:
   joint_state_controller:
     type: joint_state_controller/JointStateController
     publish_rate: 50
-  # joint_position_controller:
-  #   type: position_controllers/JointPositionController
-  #   joint: finger_joint
+  joint_position_controller:
+    type: position_controllers/JointPositionController
+    joint: finger_width
   gripper_controller:
     type: position_controllers/GripperActionController
-    joint: finger_joint
+    joint: finger_width

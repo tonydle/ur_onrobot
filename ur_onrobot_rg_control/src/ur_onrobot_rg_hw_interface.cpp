@@ -1,20 +1,34 @@
 #include "ur_onrobot_rg_control/ur_onrobot_rg_hw_interface.h"
-#include <cmath>
 
 OnRobotRGHWInterface::OnRobotRGHWInterface(ros::NodeHandle& nh) : nh_(nh), position_received_(false)
 {
-    joint_position_ = std::numeric_limits<double>::quiet_NaN(); // NaN means no position received yet
+    joint_position_ = 0.0;
     joint_velocity_ = 0.0;
     joint_effort_ = 0.0;
-    joint_command_ = std::numeric_limits<double>::quiet_NaN(); // NaN means no command received yet
+    joint_command_ = 0.0;
+    last_joint_command_ = joint_command_;
+
+    std::string gripper;
+    nh_.param<std::string>("gripper", gripper, "rg2");
+    
+    if (gripper == "rg6") {
+        output_command_.rGFR = 1200;
+        open_position_ = 0.160;
+    } else { // default to "rg2"
+        output_command_.rGFR = 400;
+        open_position_ = 0.110;
+    }
+    output_command_.rCTR = 16;
 
     output_pub_ = nh_.advertise<ur_onrobot_rg_control::OnRobotRGOutputCopy>("OnRobotRGOutputCopy", 10);
     input_sub_ = nh_.subscribe("OnRobotRGInputCopy", 10, &OnRobotRGHWInterface::inputCB, this);
+    open_srv_ = nh_.advertiseService("open", &OnRobotRGHWInterface::openCB, this);
+    close_srv_ = nh_.advertiseService("close", &OnRobotRGHWInterface::closeCB, this);
 
-    hardware_interface::JointStateHandle state_handle("finger_joint", &joint_position_, &joint_velocity_, &joint_effort_);
+    hardware_interface::JointStateHandle state_handle("finger_width", &joint_position_, &joint_velocity_, &joint_effort_);
     joint_state_interface_.registerHandle(state_handle);
 
-    hardware_interface::JointHandle pos_handle(joint_state_interface_.getHandle("finger_joint"), &joint_command_);
+    hardware_interface::JointHandle pos_handle(joint_state_interface_.getHandle("finger_width"), &joint_command_);
     position_joint_interface_.registerHandle(pos_handle);
 
     registerInterface(&joint_state_interface_);
@@ -31,30 +45,50 @@ void OnRobotRGHWInterface::read()
 {
     if (!position_received_) return; // Do nothing if no position received yet
     
-    double finger_D = (input_data_.gWDF / 10.0) / 1000.0;
-    try
-    {
-        joint_position_ = 0.803591 - asin(((finger_D - 0.034356) / 2.0 + 0.018389) / 0.055000);
-    }
-    catch (const std::exception&)
-    {
-        joint_position_ = 0;
-    }
+    joint_position_ = (input_data_.gWDF / 10.0) / 1000.0;
+    if(joint_position_ < 0) joint_position_ = 0;
+    if(joint_position_ > open_position_) joint_position_ = open_position_;
 }
 
 void OnRobotRGHWInterface::write()
 {
-    if (std::isnan(joint_command_)) return; // Do nothing if no command received yet
+    std::lock_guard<std::mutex> lock(command_mutex_);
 
-    double finger_theta = joint_command_;
-    if (finger_theta > 0.785398)
-        finger_theta = 0.785398;
-    if (finger_theta < -0.558505)
-        finger_theta = -0.558505;
+    if (abs(joint_command_ - last_joint_command_) < 0.0001) return;
 
-    double finger_D = (0.034356 + 2 * (0.05500 * sin(-finger_theta + 0.803591) - 0.018389)) * 10000;
+    calculateAndPublishOutput();
+
+    last_joint_command_ = joint_command_;
+}
+
+void OnRobotRGHWInterface::calculateAndPublishOutput()
+{
+    double finger_D = joint_command_ * 10000;
+    if (finger_D < 0) finger_D = 0;
     output_command_.rGWD = static_cast<int>(finger_D);
-    output_command_.rGFR = 400; // Set appropriate force
-    output_command_.rCTR = 16;
     output_pub_.publish(output_command_);
+}
+
+bool OnRobotRGHWInterface::openCB(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res)
+{
+    {
+        std::lock_guard<std::mutex> lock(command_mutex_);
+        joint_command_ = open_position_;
+    }
+    calculateAndPublishOutput();
+    res.success = true;
+    res.message = "Opening";
+    return true;
+}
+
+bool OnRobotRGHWInterface::closeCB(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res)
+{
+    {
+        std::lock_guard<std::mutex> lock(command_mutex_);
+        joint_command_ = 0.0;
+    }
+    calculateAndPublishOutput();
+    res.success = true;
+    res.message = "Closing";
+    return true;
 }

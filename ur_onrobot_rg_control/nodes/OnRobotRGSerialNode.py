@@ -67,7 +67,7 @@ class OnRobotRGSerial:
 if __name__ == '__main__':
     try:
         device = rospy.get_param('/onrobot/device', '/tmp/ttyUR')
-        gtype = rospy.get_param('/onrobot/gripper', 'rg6')
+        gtype = rospy.get_param('/onrobot/gripper', 'rg2')
         changer_addr = rospy.get_param('/onrobot/changer_addr', '65')
         dummy = rospy.get_param('/onrobot/dummy', False)
         rospy.init_node('OnRobotRGSerialNode', anonymous=True, log_level=rospy.DEBUG)

@@ -134,6 +134,7 @@
       <child link="${prefix}left_outer_knuckle" />
       <axis xyz="-1 0 0" />
       <limit lower="-0.558505" upper="0.785398" velocity="100.0" effort="1000" />
+      <mimic joint="${prefix}finger_width" multiplier="${0.85 * ((-0.558505 - 0.785398) / 0.110)}" offset="0.785398" />
     </joint>
     <xacro:finger_joints prefix="${prefix}" fingerprefix="left" reflect="1.0"/>
   </xacro:macro>
@@ -150,11 +151,31 @@
     <xacro:finger_joints prefix="${prefix}" fingerprefix="right" reflect="-1.0"/>
   </xacro:macro>
 
+  <xacro:macro name="finger_tips" params="prefix">
+    <link name="${prefix}left_finger_tip"/>
+    <link name="${prefix}right_finger_tip"/>
+
+    <joint name="${prefix}left_finger_tip_joint" type="fixed">
+      <origin xyz="0 0.019 0.038" rpy="0 0 0" />
+      <parent link="${prefix}left_inner_finger" />
+      <child link="${prefix}left_finger_tip" />
+    </joint>
+
+    <joint name="${prefix}finger_width" type="prismatic">
+      <origin xyz="0 0 0" rpy="${pi} 0 0" />
+      <parent link="${prefix}left_finger_tip" />
+      <child link="${prefix}right_finger_tip" />
+      <axis xyz="0 -1 0" />
+      <limit lower="0" upper="0.110" velocity="100.0" effort="1000" />
+    </joint>
+  </xacro:macro>
+
   <xacro:macro name="onrobot_rg2" params="prefix">
     <xacro:onrobot_rg2_base_link prefix="${prefix}"/>
     <xacro:finger_links prefix="${prefix}" fingerprefix="left"/>
     <xacro:finger_links prefix="${prefix}" fingerprefix="right"/>
     <xacro:finger_joint prefix="${prefix}"/>
+    <xacro:finger_tips prefix="${prefix}"/>
     <xacro:right_outer_knuckle_joint prefix="${prefix}"/>
     <xacro:onrobot_rg2_transmission prefix="${prefix}"/>
     <xacro:onrobot_rg2_gazebo prefix="${prefix}"/>
