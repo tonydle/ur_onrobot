@@ -4,6 +4,7 @@
   <!-- import macro -->
   <xacro:include filename="$(find ur_onrobot_description)/urdf/ur_onrobot_macro.xacro"/>
 
+  <xacro:arg name="cable_connector" default="true"/>
   <xacro:arg name="joint_limit_params" default="$(find ur_description)/config/$(arg robot_model)/joint_limits.yaml"/>
   <xacro:arg name="kinematics_params" default="$(find ur_description)/config/$(arg robot_model)/default_kinematics.yaml"/>
   <xacro:arg name="physical_params" default="$(find ur_description)/config/$(arg robot_model)/physical_parameters.yaml"/>

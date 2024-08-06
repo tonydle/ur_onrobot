@@ -30,7 +30,7 @@ class OnRobotRGSerial:
 
         self.pub = rospy.Publisher('OnRobotRGInput', OnRobotRGInput, queue_size=1)
         rospy.Subscriber('OnRobotRGOutput', OnRobotRGOutput, self.gripper.refreshCommand)
-        rospy.Subscriber('/ur_hardware_interface/robot_mode', RobotMode, self.robotModeCallback)
+        rospy.Subscriber('/ur/ur_hardware_interface/robot_mode', RobotMode, self.robotModeCallback)
 
         rospy.Service('restart_power', Trigger, self.restartPowerCycle)
 

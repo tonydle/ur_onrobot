@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="$(arg robot_model)_onrobot_$(arg onrobot_model)">
+    <!-- <xacro:arg name="robot_model" default="ur3e" />
+    <xacro:arg name="onrobot_model" default="rg2" /> -->
+
+    <xacro:include filename="$(find ur_onrobot_moveit_config)/config/ur_onrobot_macro.srdf.xacro" />
+
+    <xacro:ur_onrobot robot_model="$(arg robot_model)" onrobot_model="$(arg onrobot_model)"/>
+
+    <!-- Add more disable_collisions tags here if needed -->
+</robot>

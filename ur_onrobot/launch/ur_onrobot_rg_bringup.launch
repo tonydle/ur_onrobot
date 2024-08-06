@@ -11,7 +11,7 @@
     <arg name="kinematics_config" default="$(find ur_description)/config/$(arg robot_model)/default_kinematics.yaml" />
     <arg name="robot_description_file" default="$(find ur_onrobot_description)/launch/load_$(arg robot_model)_onrobot_$(arg onrobot_model).launch" />
     
-    <include file="$(find ur_robot_driver)/launch/$(arg robot_model)_bringup.launch">
+    <include file="$(find ur_robot_driver)/launch/$(arg robot_model)_bringup.launch" ns="ur" >
         <arg name="robot_ip" value="$(arg robot_ip)" />
         <arg name="kinematics_config" value="$(arg kinematics_config)" />
         <arg name="robot_description_file" value="$(arg robot_description_file)" />
@@ -26,11 +26,18 @@
         <arg name="tool_tcp_port" value="$(arg tool_tcp_port)" />
     </include>
 
+    <!-- Also load the model to /robot_description (outside of the "ur" namespace) -->
+    <include file="$(arg robot_description_file)" />
+
     <include file="$(find ur_onrobot_rg_control)/launch/bringup_rg.launch">
         <arg name="device" value="$(arg tool_device_name)" />
         <arg name="gripper" value="$(arg onrobot_model)" />
         <arg name="controller" value="$(arg gripper_controller)" />
     </include>
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <rosparam param="source_list">[/ur/joint_states,/onrobot/joint_states]</rosparam>
+    </node>
 
     <group if="$(arg rviz)">
         <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ur_onrobot_description)/cfg/view_robot.rviz" required="true"/>

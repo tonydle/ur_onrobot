@@ -1,0 +1,19 @@
+controller_list:
+  - name: fake_onrobot_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - finger_width
+  - name: fake_manipulator_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - shoulder_pan_joint
+      - shoulder_lift_joint
+      - elbow_joint
+      - wrist_1_joint
+      - wrist_2_joint
+      - wrist_3_joint
+initial:  # Define initial robot poses per group
+  - group: manipulator
+    pose: ready
+  - group: onrobot
+    pose: open
