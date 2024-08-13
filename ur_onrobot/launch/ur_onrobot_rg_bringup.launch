@@ -37,6 +37,7 @@
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
         <rosparam param="source_list">[/ur/joint_states,/onrobot/joint_states]</rosparam>
+        <rosparam param="rate">50</rosparam>
     </node>
 
     <group if="$(arg rviz)">

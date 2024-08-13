@@ -47,7 +47,7 @@ void OnRobotRGHWInterface::read()
     
     joint_position_ = (input_data_.gWDF / 10.0) / 1000.0;
     if(joint_position_ < 0) joint_position_ = 0;
-    if(joint_position_ > open_position_) joint_position_ = open_position_;
+    if(joint_position_ - open_position_ > 0.5 ) joint_position_ = 0; // To avoid false readings (when offset is not set correctly)
 }
 
 void OnRobotRGHWInterface::write()

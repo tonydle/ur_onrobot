@@ -3,7 +3,7 @@
   <name>ur_onrobot_moveit_config</name>
   <version>0.3.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the ur5e_onrobot_rg6_pillar_platform with the MoveIt Motion Planning Framework
+     A package with all the configuration and launch files for using an ur_onrobot with the MoveIt Motion Planning Framework
   </description>
   <author email="tonyle98@outlook.com">Tony Le</author>
   <maintainer email="tonyle98@outlook.com">Tony Le</maintainer>
