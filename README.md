@@ -1,13 +1,14 @@
 # ur_onrobot
-<img src=images/ur_onrobot.gif width=25%>
+<img src=images/ur_onrobot.gif width=30%>
 
-ROS drivers for OnRobot Grippers installed on Universal Robots e-Series, interfaced via Tool I/O with the RS-485 URCap.
+ROS drivers for OnRobot Grippers installed on Universal Robots.
+For e-Series robots, the gripper can be controlled via the Tool I/O RS-485 interface.
 
 This repository was inspired by and depends on [Osaka-University-Harada-Laboratory/onrobot](https://github.com/Osaka-University-Harada-Laboratory/onrobot).
 
 ## Features
 
-- Controller for OnRobot [RG2](https://onrobot.com/en/products/rg2-gripper) / [RG6](https://onrobot.com/en/products/rg6-gripper) via Modbus Serial.
+- Additional controllers for OnRobot [RG2](https://onrobot.com/en/products/rg2-gripper) / [RG6](https://onrobot.com/en/products/rg6-gripper) via Modbus Serial.
 - Complete [ros_control](http://wiki.ros.org/ros_control) implementation.
 - Modular URDF descriptions for UR - OnRobot combinations.
 - Combined bringup launch files for easy setup.
@@ -20,17 +21,21 @@ This repository was inspired by and depends on [Osaka-University-Harada-Laborato
 ## Installation
 
 1. Follow all installation instructions for [Osaka-University-Harada-Laboratory/onrobot](https://github.com/Osaka-University-Harada-Laboratory/onrobot.git)
-2. Install the rest of the dependencies with rosdep
+2. Clone this repository into your catkin workspace
 ```bash
-cd catkin_ws && rosdep install --from-paths src --ignore-src -r -y
+cd catkin_ws/src && git clone https://github.com/tonydle/ur_onrobot.git
 ```
-3. Build the workspace
+3. Install the rest of the dependencies with rosdep
+```bash
+cd ../ && rosdep install --from-paths src --ignore-src -r -y
+```
+4. Build the workspace
 ```bash
 catkin_make
 ```
 
 ## Hardware Setup
-
+### Using the Tool I/O of the UR robot (RS-485)
 1. Use a short cable to connect the OnRobot Quick Changer to the Tool I/O of the UR robot.
 2. On the UR Teach Pendant, install the [RS485 Daemon URCap](https://github.com/UniversalRobots/Universal_Robots_ToolComm_Forwarder_URCap)
   - Download the URCap from [Releases](https://github.com/UniversalRobots/Universal_Robots_ToolComm_Forwarder_URCap/releases)
@@ -54,16 +59,29 @@ catkin_make
         - Digital Output 0: Sinking (NPN)
         - Digital Output 1: Sinking (NPN)
 
-## Usage
-### Bringup
-```bash
-roslaunch ur_onrobot ur_onrobot_rg_bringup.launch robot_model:=[ur3e/ur5e] onrobot_model:=[rg2/rg6] robot_ip:=XXX.XXX.XXX.XXX
-```
-To create a new robot combination, add and configure a new 'load_urXX_onrobot_rgX.launch' launch file in ur_onrobot_description
+### Using the OnRobot Compute Box
+1. Connect the cable between Compute Box and Tool Changer
+2. Connect an Ethernet cable between Compute Box and your computer
 
-### Getting joint state (finger_width in m)
+## Usage
+### Bringup when using the Tool I/O (RS-485) with e-Series robots
+```bash
+roslaunch ur_onrobot bringup_tool_io.launch robot_model:=[ur3e/ur5e] onrobot_model:=[rg2/rg6] robot_ip:=XXX.XXX.XXX.XXX
+```
+### Bringup when using the OnRobot Compute Box with CB-Series robots
+```bash
+roslaunch ur_onrobot bringup_compute_box.launch robot_model:=[ur3/ur5] onrobot_model:=[rg2/rg6] robot_ip:=XXX.XXX.XXX.XXX compute_box_ip:=XXX.XXX.XXX.XXX
+```
+
+Note: To create a new robot combination, add and configure a new 'load_urX_onrobot_rgX.launch' launch file in ur_onrobot_description
+
+### Getting gripper joint state (finger_width in m)
 ```bash
 rostopic echo /onrobot/joint_states
+```
+### Getting UR joint state
+```bash
+rostopic echo /ur/joint_states
 ```
 
 ### ROS Service Calls

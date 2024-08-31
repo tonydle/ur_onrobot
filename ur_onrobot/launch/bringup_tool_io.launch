@@ -29,7 +29,7 @@
     <!-- Also load the model to /robot_description (outside of the "ur" namespace) -->
     <include file="$(arg robot_description_file)" />
 
-    <include file="$(find ur_onrobot_rg_control)/launch/bringup_rg.launch">
+    <include file="$(find ur_onrobot_rg_control)/launch/bringup_rg_serial.launch">
         <arg name="device" value="$(arg tool_device_name)" />
         <arg name="gripper" value="$(arg onrobot_model)" />
         <arg name="controller" value="$(arg gripper_controller)" />

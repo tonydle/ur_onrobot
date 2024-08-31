@@ -1,0 +1,60 @@
+<launch>
+    <arg name="ip"              default="192.168.1.1"/>
+    <arg name="port"            default="502"/>
+    <arg name="gripper"         default="rg2"/>
+    <arg name="controller"      default="gripper_action"/>
+    <arg name="changer_addr"    default="65"/>
+    <arg name="dummy"           default="false"/>
+
+    <param name="/onrobot/ip"           value="$(arg ip)" />
+    <param name="/onrobot/port"         value="$(arg port)" />
+    <param name="/onrobot/gripper"          value="$(arg gripper)" />
+    <param name="/onrobot/changer_addr"     value="$(arg changer_addr)" />
+    <param name="/onrobot/dummy"            value="$(arg dummy)" />
+
+    <node   name="OnRobotRGStatusListener"
+            ns="/onrobot"
+            pkg="onrobot_rg_control"
+            type="OnRobotRGStatusListener.py"
+            output="log"/>
+
+    <node   name="OnRobotRGTcpNode"
+            ns="/onrobot"
+            pkg="onrobot_rg_control"
+            type="OnRobotRGTcpNode.py"
+            respawn="True"
+            output="log"/>
+  
+    <node   name="ur_onrobot_rg_control"
+            ns="/onrobot"
+            pkg="ur_onrobot_rg_control"
+            type="ur_onrobot_rg_control_node"
+            respawn="True"
+            output="screen"/>
+
+    <node   name="MessageBridge"
+            ns="/onrobot"
+            pkg="ur_onrobot_rg_control"
+            type="MessageBridge.py"
+            respawn="True"
+            output="screen"/>
+
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <rosparam file="$(find ur_onrobot_rg_control)/config/rg_controllers.yaml" command="load"/>
+
+    <!-- Start ROS controllers -->
+    <node if="$(eval arg('controller') == 'gripper_action')"
+        name="rg_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        ns="/onrobot"
+        output="screen" args="joint_state_controller gripper_controller"/>
+
+    <node if="$(eval arg('controller') == 'joint_position')"
+        name="rg_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        ns="/onrobot"
+        output="screen" args="joint_state_controller joint_position_controller"/>
+
+    <node name="rg_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+        ns="/onrobot"
+        respawn="true" output="screen" />
+
+</launch>
