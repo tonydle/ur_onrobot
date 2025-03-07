@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<launch>
+  <!--
+    Main entry point for loading a single UR-Onrobot into Gazebo, in isolation, in the
+    empty world.
+
+    A set of ros_control controllers similar to those loaded by ur_robot_driver
+    will be loaded by 'ur_onrobot_gazebo_control.launch.launch.xml' (note: *similar*, *not* identical).
+  -->
+
+  <arg name="robot_model" default="ur3e" />
+  <arg name="onrobot_model" default="rg2" />
+
+  <!--Robot description and related parameter files -->
+  <arg name="robot_description_file" default="$(find ur_onrobot_gazebo)/launch/inc/load_$(arg robot_model)_onrobot_$(arg onrobot_model)_gazebo.launch" />
+  <arg name="joint_limit_params" default="$(find ur_description)/config/$(arg robot_model)/joint_limits.yaml"/>
+  <arg name="kinematics_params" default="$(find ur_description)/config/$(arg robot_model)/default_kinematics.yaml"/>
+  <arg name="physical_params" default="$(find ur_description)/config/$(arg robot_model)/physical_parameters.yaml"/>
+  <arg name="visual_params" default="$(find ur_description)/config/$(arg robot_model)/visual_parameters.yaml"/>
+
+  <!-- UR Controller configuration -->
+  <arg name="controller_config_file" default="$(find ur_onrobot_gazebo)/config/ur_onrobot_gazebo_controllers.yaml"/>
+
+  <!-- robot_state_publisher configuration -->
+  <arg name="tf_prefix" default="" doc="tf_prefix used for the robot."/>
+  <arg name="tf_pub_rate" default="500" doc="Rate at which robot_state_publisher should publish transforms."/>
+
+  <!-- Gazebo parameters -->
+  <arg name="paused" default="false" doc="Starts Gazebo in paused mode" />
+  <arg name="gui" default="true" doc="Starts Gazebo gui" />
+
+  <!-- Load urdf on the parameter server -->
+  <include file="$(arg robot_description_file)">
+    <arg name="joint_limit_params" value="$(arg joint_limit_params)"/>
+    <arg name="kinematics_params" value="$(arg kinematics_params)"/>
+    <arg name="physical_params" value="$(arg physical_params)"/>
+    <arg name="visual_params" value="$(arg visual_params)"/>
+  </include>
+
+  <!-- Start the 'driver' (ie: Gazebo in this case) -->
+  <include file="$(dirname)/ur_onrobot_gazebo_control.launch.xml">
+    <arg name="controller_config_file" value="$(arg controller_config_file)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="paused" value="$(arg paused)"/>
+  </include>
+
+  <param name="/use_sim_time" value="true" />
+
+  <!-- <group ns="/ur">
+    <include file="$(arg robot_description_file)">
+      <arg name="joint_limit_params" value="$(arg joint_limit_params)"/>
+      <arg name="kinematics_params" value="$(arg kinematics_params)"/>
+      <arg name="physical_params" value="$(arg physical_params)"/>
+      <arg name="visual_params" value="$(arg visual_params)"/>
+    </include>
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"
+      respawn="true" output="screen">
+    </node>
+  </group> -->
+
+  
+
+  <!-- Robot state publisher -->
+  <!-- <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="$(arg tf_pub_rate)" />
+    <param name="tf_prefix" value="$(arg tf_prefix)" />
+  </node> -->
+</launch>

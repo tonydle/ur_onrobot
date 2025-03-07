@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- configuration -->
+  <arg name="robot_model" />
+  <arg name="onrobot_model" />
+  <arg name="cable_connector" default="true" />
+
+  <!--ur parameters files -->
+  <arg name="joint_limit_params" default="$(find ur_description)/config/$(arg robot_model)/joint_limits.yaml" />
+  <arg name="kinematics_params" default="$(find ur_description)/config/$(arg robot_model)/default_kinematics.yaml" />
+  <arg name="physical_params" default="$(find ur_description)/config/$(arg robot_model)/physical_parameters.yaml" />
+  <arg name="visual_params" default="$(find ur_description)/config/$(arg robot_model)/visual_parameters.yaml" />
+
+  <!--common parameters -->
+  <arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface" />
+  <arg name="safety_limits" default="false" doc="If True, enable the safety limits controller"/>
+  <arg name="safety_pos_margin" default="0.15" doc="The lower/upper limits in the safety controller" />
+  <arg name="safety_k_position" default="20" doc="Used to set k position in the safety controller" />
+
+  <!-- use common launch file and pass all arguments to it -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find ur_onrobot_gazebo)/launch/inc/ur_onrobot_gazebo.xacro'
+  
+    robot_model:=$(arg robot_model)
+    onrobot_model:=$(arg onrobot_model)
+    cable_connector:=$(arg cable_connector)
+
+    joint_limit_params:=$(arg joint_limit_params)
+    kinematics_params:=$(arg kinematics_params)
+    physical_params:=$(arg physical_params)
+    visual_params:=$(arg visual_params)
+    transmission_hw_interface:=$(arg transmission_hw_interface)
+    safety_limits:=$(arg safety_limits)
+    safety_pos_margin:=$(arg safety_pos_margin)
+    safety_k_position:=$(arg safety_k_position)"
+    />
+</launch>

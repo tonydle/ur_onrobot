@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="onrobot_rg2_gazebo_finger_width" params="prefix">
+
+    <!-- Standard gazebo_ros_control plugin -->
+    <!-- <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/onrobot_rg2</robotNamespace>
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      </plugin>
+    </gazebo> -->
+
+    <gazebo>
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" 
+              name="mimic_${prefix}finger_joint">
+        <!-- 'joint' = the master, 'mimicJoint' = the slave -->
+        <joint>${prefix}finger_width</joint>
+        <mimicJoint>${prefix}finger_joint</mimicJoint>
+        <!-- Use the same multiplier & offset from your URDF. Example: -->
+        <multiplier>${0.85 * ((-0.558505 - 0.785398) / 0.110)}</multiplier>
+        <offset>0.785398</offset>
+        <maxEffort>5.0</maxEffort>
+      </plugin>
+
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_${prefix}left_inner_knuckle_joint">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}left_inner_knuckle_joint</mimicJoint>
+        <multiplier>-1.0</multiplier>
+        <offset>0.0</offset>
+        <maxEffort>5.0</maxEffort>
+        <!-- <hasPID /> -->
+      </plugin>
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_${prefix}right_inner_knuckle_joint">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}right_inner_knuckle_joint</mimicJoint>
+        <multiplier>-1.0</multiplier>
+        <offset>0.0</offset>
+        <maxEffort>5.0</maxEffort>
+        <!-- <hasPID /> -->
+      </plugin>
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_${prefix}left_inner_finger_joint">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}left_inner_finger_joint</mimicJoint>
+        <multiplier>1.0</multiplier>
+        <offset>0.0</offset>
+        <maxEffort>5.0</maxEffort>
+        <!-- <hasPID /> -->
+      </plugin>
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_${prefix}right_inner_finger_joint">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}right_inner_finger_joint</mimicJoint>
+        <multiplier>1.0</multiplier>
+        <offset>0.0</offset>
+        <maxEffort>5.0</maxEffort>
+        <!-- <hasPID /> -->
+      </plugin>
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_${prefix}right_outer_knuckle_joint">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}right_outer_knuckle_joint</mimicJoint>
+        <multiplier>-1.0</multiplier>
+        <offset>0.0</offset>
+         <maxEffort>5.0</maxEffort>
+        <!-- <hasPID /> -->
+      </plugin>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>
