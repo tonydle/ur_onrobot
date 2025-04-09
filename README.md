@@ -93,7 +93,7 @@ rosservice call /onrobot/open
 ```bash
 rosservice call /onrobot/close
 ```
-#### Restart power (std_srvs/Trigger)
+#### Restart power (std_srvs/Trigger) - only works with Compute Box
 ```bash
 rosservice call /onrobot/restart_power
 ```
@@ -110,9 +110,8 @@ rosrun actionlib_tools axclient.py /onrobot/gripper_controller/gripper_cmd
 
 ### Alternatively: Control the gripper with Joint Position Controller
 #### Bringup with joint_position controller
-```bash
-roslaunch ur_onrobot ur_onrobot_rg_bringup.launch robot_model:=[ur3e/ur5e] onrobot_model:=[rg2/rg6] robot_ip:=XXX.XXX.XXX.XXX gripper_controller:=joint_position
-```
+Add the argument `gripper_controller:=joint_position` to either your `bringup_tool_io.launch` or `bringup_compute_box.launch` command
+
 #### Set the finger_width
 ```bash
 rostopic pub /onrobot/joint_position_controller/command std_msgs/Float64 "data: 0.05"
